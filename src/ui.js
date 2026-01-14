@@ -16,6 +16,7 @@ import { MoveBack, MoveMenu, MovePlay, MoveRec, MoveRecord, MoveShift,
          WhiteLedDim, WhiteLedBright } from '../../shared/constants.mjs';
 import { drawMenuHeader, drawMenuList, drawMenuFooter, menuLayoutDefaults,
          showOverlay, tickOverlay, drawOverlay, isOverlayActive } from '../../shared/menu_layout.mjs';
+import { createTextScroller } from '../../shared/text_scroll.mjs';
 
 /* ============================================================================
  * Constants
@@ -101,6 +102,9 @@ let needsRedraw = true;
 let tickCount = 0;
 const REDRAW_INTERVAL = 6;
 
+/* Text scroller for selected track's patch name */
+const patchNameScroller = createTextScroller();
+
 /* ============================================================================
  * Helpers
  * ============================================================================ */
@@ -139,12 +143,15 @@ function syncState() {
 
 function loadPatches() {
     patches = [];
+    /* Add "None" as first option (default) */
+    patches.push({ index: -1, name: "(None)" });
     for (let i = 0; i < patchCount; i++) {
         const name = getParam(`patch_name_${i}`);
         if (name) {
             patches.push({ index: i, name: name });
         }
     }
+    selectedPatch = 0;  /* Default to "None" */
 }
 
 /* Query knob mapping info and show overlay */
@@ -258,16 +265,7 @@ function drawMainView() {
         /* Track indicator */
         const prefix = isArmed ? "R" : isSelected ? ">" : " ";
 
-        /* Track name with patch */
-        let name = `T${i + 1}`;
-        if (track.patch !== "Empty") {
-            name += `: ${track.patch}`;
-        }
-        if (name.length > 16) {
-            name = name.substring(0, 15) + "..";
-        }
-
-        /* Level/Pan info */
+        /* Level/Pan info (right side) */
         const levelVal = Math.round(track.level * 100);
         let panStr;
         const panVal = Math.round(track.pan * 50);
@@ -279,14 +277,37 @@ function drawMainView() {
             panStr = "C";
         }
         const lpInfo = `L:${levelVal} P:${panStr}`;
+        const lpInfoWidth = lpInfo.length * 6 + 4;
+
+        /* Track name with patch - calculate available space */
+        const prefixWidth = 18;  /* "R " or "> " = 2 chars + space */
+        const availableWidth = SCREEN_WIDTH - prefixWidth - lpInfoWidth;
+        const maxChars = Math.floor(availableWidth / 6);
+
+        let fullName = `T${i + 1}`;
+        if (track.patch !== "Empty") {
+            fullName += `: ${track.patch}`;
+        }
+
+        let displayName;
+        if (isSelected && fullName.length > maxChars) {
+            /* Use scroller for selected track with long name */
+            patchNameScroller.setSelected(i);
+            displayName = patchNameScroller.getScrolledText(fullName, maxChars);
+        } else if (fullName.length > maxChars) {
+            /* Truncate non-selected tracks */
+            displayName = fullName.substring(0, maxChars - 2) + "..";
+        } else {
+            displayName = fullName;
+        }
 
         /* Draw row */
         if (isSelected) {
             fill_rect(0, y, SCREEN_WIDTH, trackHeight, 1);
-            print(2, y + 2, `${prefix} ${name}`, 0);
+            print(2, y + 2, `${prefix} ${displayName}`, 0);
             print(SCREEN_WIDTH - lpInfo.length * 6 - 2, y + 2, lpInfo, 0);
         } else {
-            print(2, y + 2, `${prefix} ${name}`, 1);
+            print(2, y + 2, `${prefix} ${displayName}`, 1);
             print(SCREEN_WIDTH - lpInfo.length * 6 - 2, y + 2, lpInfo, 1);
         }
     }
@@ -542,9 +563,16 @@ function handleCC(cc, val) {
             needsRedraw = true;
         } else if (viewMode === VIEW_PATCH && patches.length > 0) {
             /* In patch view: load the selected patch and return to main */
-            setParam("load_patch", String(selectedPatch));
+            const patchIndex = patches[selectedPatch].index;
+            if (patchIndex < 0) {
+                /* "None" selected - clear the patch */
+                setParam("clear_patch", String(selectedTrack));
+                showOverlay("Cleared", `Track ${selectedTrack + 1}`);
+            } else {
+                setParam("load_patch", String(patchIndex));
+                showOverlay("Loaded", patches[selectedPatch].name);
+            }
             syncState();
-            showOverlay("Loaded", patches[selectedPatch].name);
             viewMode = VIEW_MAIN;
             needsRedraw = true;
         }
@@ -668,6 +696,11 @@ function tick() {
 
     /* Handle overlay timeout */
     if (tickOverlay()) {
+        needsRedraw = true;
+    }
+
+    /* Tick the patch name scroller */
+    if (patchNameScroller.tick()) {
         needsRedraw = true;
     }
 

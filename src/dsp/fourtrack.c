@@ -1079,6 +1079,21 @@ static void plugin_set_param(const char *key, const char *val) {
             ft_log(msg);
         }
     }
+    else if (strcmp(key, "clear_patch") == 0) {
+        /* Clear patch from a track */
+        int track = atoi(val);
+        if (track >= 0 && track < NUM_TRACKS) {
+            g_tracks[track].patch_name[0] = '\0';
+            g_tracks[track].patch_path[0] = '\0';
+            /* If this is the selected track, unload the synth */
+            if (track == g_selected_track) {
+                synth_panic();
+                unload_synth();
+            }
+            snprintf(msg, sizeof(msg), "Track %d: patch cleared", track + 1);
+            ft_log(msg);
+        }
+    }
     else if (strcmp(key, "load_synth") == 0) {
         /* Load a synth module by path */
         synth_panic();
