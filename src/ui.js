@@ -41,7 +41,7 @@ const CC_LEFT = MoveLeft;
 const CC_RIGHT = MoveRight;
 
 /* Track row CCs (for track selection) */
-const TRACK_ROWS = [MoveRow4, MoveRow3, MoveRow2, MoveRow1];  /* Bottom to top */
+const TRACK_ROWS = [MoveRow1, MoveRow2, MoveRow3, MoveRow4];  /* Top to bottom, matches display */
 
 /* Knobs for track controls (when in mixer view) */
 const LEVEL_KNOBS = [MoveKnob1, MoveKnob2, MoveKnob3, MoveKnob4];
