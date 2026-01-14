@@ -282,15 +282,6 @@ function drawMainView() {
         fill_rect(barX + 1, barY + 1, fillW - 2, barH - 2, isSelected ? 0 : 1);
     }
 
-    /* Footer */
-    let footerText = "";
-    if (shiftHeld) {
-        footerText = "Arm | Mute | Solo | Clear";
-    } else {
-        footerText = `BPM:${tempo} | Loop:${loopEnabled ? "On" : "Off"}`;
-    }
-    drawMenuFooter(footerText);
-
     /* Draw overlay if active */
     drawOverlay();
 }
