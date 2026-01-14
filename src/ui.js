@@ -313,44 +313,51 @@ function drawPatchView() {
 
 function drawMixerView() {
     clear_screen();
-    drawMenuHeader("Mixer", "");
 
-    /* Draw 4 vertical faders */
-    const faderWidth = 28;
-    const faderHeight = 40;
-    const startX = 8;
-    const startY = 14;
-    const gap = 4;
+    /* 4 channels across 128px = 32px each */
+    const channelWidth = 32;
+    const faderWidth = 16;
+    const faderHeight = 48;
+    const startY = 6;
+    const panY = 58;  /* Y position for pan tick area */
 
     for (let i = 0; i < NUM_TRACKS; i++) {
-        const x = startX + i * (faderWidth + gap);
+        const channelX = i * channelWidth;
+        const faderX = channelX + (channelWidth - faderWidth) / 2;
         const track = tracks[i];
         const isSelected = i === selectedTrack;
+        const isArmed = i === armedTrack;
+
+        /* Track number at top */
+        const label = `${i + 1}`;
+        print(channelX + 13, 0, label, 1);
+
+        /* Selection/arm indicator */
+        if (isArmed) {
+            print(channelX + 2, 0, "R", 1);
+        } else if (isSelected) {
+            print(channelX + 2, 0, ">", 1);
+        }
 
         /* Fader background */
-        fill_rect(x, startY, faderWidth, faderHeight, 1);
+        fill_rect(faderX, startY, faderWidth, faderHeight, 1);
 
-        /* Fader fill (inverted - fill from bottom) */
-        const fillHeight = Math.floor(track.level * (faderHeight - 4));
+        /* Fader fill (from bottom) */
+        const fillHeight = Math.floor(track.level * (faderHeight - 2));
         if (fillHeight > 0) {
-            fill_rect(x + 2, startY + faderHeight - 2 - fillHeight, faderWidth - 4, fillHeight, 0);
+            fill_rect(faderX + 1, startY + faderHeight - 1 - fillHeight, faderWidth - 2, fillHeight, 0);
         }
 
-        /* Track label */
-        const label = `T${i + 1}`;
-        const labelX = x + (faderWidth - label.length * 6) / 2;
-        print(labelX, startY + faderHeight + 2, label, isSelected ? 1 : 0);
-
-        /* Mute/Solo indicator */
-        if (track.muted) {
-            print(x + 10, startY - 1, "M", 1);
-        } else if (track.solo) {
-            print(x + 10, startY - 1, "S", 1);
-        }
+        /* Pan tick at bottom - pan range is -1 to +1, map to 0-30px within channel */
+        const panRange = channelWidth - 2;
+        const panX = channelX + 1 + Math.floor((track.pan + 1) / 2 * panRange);
+        /* Draw center line */
+        fill_rect(channelX + channelWidth / 2, panY, 1, 5, 1);
+        /* Draw pan position tick */
+        fill_rect(panX, panY + 1, 2, 3, 1);
     }
 
-    drawMenuFooter("K1-4:Level K5-8:Pan");
-    drawOverlay();
+    /* No overlay in mixer view */
 }
 
 function draw() {
@@ -529,10 +536,11 @@ function handleCC(cc, val) {
             viewMode = VIEW_PATCH;
             needsRedraw = true;
         } else if (viewMode === VIEW_PATCH && patches.length > 0) {
-            /* In patch view: load the selected patch */
+            /* In patch view: load the selected patch and return to main */
             setParam("load_patch", String(selectedPatch));
             syncState();
             showOverlay("Loaded", patches[selectedPatch].name);
+            viewMode = VIEW_MAIN;
             needsRedraw = true;
         }
         return;
