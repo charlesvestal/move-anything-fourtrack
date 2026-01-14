@@ -324,9 +324,9 @@ function drawMixerView() {
     /* 4 channels across 128px = 32px each */
     const channelWidth = 32;
     const faderWidth = 16;
-    const faderHeight = 48;
-    const startY = 6;
-    const panY = 58;  /* Y position for pan tick area */
+    const faderHeight = 40;
+    const startY = 10;
+    const panY = 56;  /* Y position for pan tick area */
 
     for (let i = 0; i < NUM_TRACKS; i++) {
         const channelX = i * channelWidth;
