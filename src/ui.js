@@ -267,30 +267,28 @@ function drawMainView() {
             name = name.substring(0, 15) + "..";
         }
 
-        /* Track info */
-        let info = "";
-        if (track.muted) info = "[M]";
-        else if (track.solo) info = "[S]";
-        else if (track.length > 0) info = `${track.length.toFixed(1)}s`;
+        /* Level/Pan info */
+        const levelVal = Math.round(track.level * 100);
+        let panStr;
+        const panVal = Math.round(track.pan * 50);
+        if (panVal < -2) {
+            panStr = `L${-panVal}`;
+        } else if (panVal > 2) {
+            panStr = `R${panVal}`;
+        } else {
+            panStr = "C";
+        }
+        const lpInfo = `L:${levelVal} P:${panStr}`;
 
         /* Draw row */
         if (isSelected) {
             fill_rect(0, y, SCREEN_WIDTH, trackHeight, 1);
             print(2, y + 2, `${prefix} ${name}`, 0);
-            if (info) print(SCREEN_WIDTH - info.length * 6 - 4, y + 2, info, 0);
+            print(SCREEN_WIDTH - lpInfo.length * 6 - 2, y + 2, lpInfo, 0);
         } else {
             print(2, y + 2, `${prefix} ${name}`, 1);
-            if (info) print(SCREEN_WIDTH - info.length * 6 - 4, y + 2, info, 1);
+            print(SCREEN_WIDTH - lpInfo.length * 6 - 2, y + 2, lpInfo, 1);
         }
-
-        /* Level indicator bar */
-        const barX = 88;
-        const barW = 30;
-        const barH = 4;
-        const barY = y + 3;
-        const fillW = Math.floor(track.level * barW);
-        fill_rect(barX, barY, barW, barH, 1);
-        fill_rect(barX + 1, barY + 1, fillW - 2, barH - 2, isSelected ? 0 : 1);
     }
 
     /* Draw overlay if active */
