@@ -208,13 +208,11 @@ function updateLEDs() {
         setButtonLED(CC_PLAY, Black);
     }
 
-    /* Record button LED */
-    if (transport === "recording") {
+    /* Record button LED - red if selected track is armed, white otherwise */
+    if (armedTrack === selectedTrack && armedTrack >= 0) {
         setButtonLED(CC_RECORD, BrightRed);
-    } else if (armedTrack >= 0) {
-        setButtonLED(CC_RECORD, White);
     } else {
-        setButtonLED(CC_RECORD, Black);
+        setButtonLED(CC_RECORD, White);
     }
 
     /* Navigation buttons */
@@ -388,16 +386,11 @@ function handleCC(cc, val) {
     }
 
     if (cc === CC_RECORD && val > 63) {
-        if (shiftHeld) {
-            /* Shift+Record = arm/disarm current track */
-            if (armedTrack === selectedTrack) {
-                setParam("arm_track", "-1");
-            } else {
-                setParam("arm_track", String(selectedTrack));
-            }
+        /* Toggle arm on selected track */
+        if (armedTrack === selectedTrack) {
+            setParam("arm_track", "-1");
         } else {
-            /* Record = toggle recording */
-            setParam("transport", "record");
+            setParam("arm_track", String(selectedTrack));
         }
         syncState();
         needsRedraw = true;
