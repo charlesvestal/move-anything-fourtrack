@@ -422,11 +422,16 @@ function handleCC(cc, val) {
             if (shiftHeld) {
                 /* Shift+Track = arm track */
                 setParam("arm_track", String(i));
+                syncState();
+            } else if (i === selectedTrack) {
+                /* Tap already-selected track = open patch browser */
+                loadPatches();
+                viewMode = VIEW_PATCH;
             } else {
                 /* Track = select track */
                 setParam("select_track", String(i));
+                syncState();
             }
-            syncState();
             needsRedraw = true;
             return;
         }
@@ -444,14 +449,11 @@ function handleCC(cc, val) {
     }
 
     if (cc === CC_MENU && val > 63) {
-        /* Cycle through views */
-        if (viewMode === VIEW_MAIN) {
-            loadPatches();
-            viewMode = VIEW_PATCH;
-        } else if (viewMode === VIEW_PATCH) {
-            viewMode = VIEW_MIXER;
-        } else {
+        /* Toggle between main and mixer */
+        if (viewMode === VIEW_MIXER) {
             viewMode = VIEW_MAIN;
+        } else {
+            viewMode = VIEW_MIXER;
         }
         needsRedraw = true;
         return;
