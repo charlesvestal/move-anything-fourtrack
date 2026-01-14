@@ -657,9 +657,28 @@ static void scan_patches(void) {
         snprintf(g_patches[g_patch_count].path, MAX_PATH_LEN,
                  "%s/%s", patches_dir, entry->d_name);
 
-        /* Extract name (remove .json extension) */
-        strncpy(g_patches[g_patch_count].name, entry->d_name, MAX_NAME_LEN - 1);
-        g_patches[g_patch_count].name[len - 5] = '\0';
+        /* Try to read the "name" field from JSON, fall back to filename */
+        char patch_name[MAX_NAME_LEN] = "";
+        FILE *pf = fopen(g_patches[g_patch_count].path, "r");
+        if (pf) {
+            char json_buf[1024];
+            size_t read_len = fread(json_buf, 1, sizeof(json_buf) - 1, pf);
+            json_buf[read_len] = '\0';
+            fclose(pf);
+
+            /* Extract "name" field */
+            if (json_get_string(json_buf, "name", patch_name, MAX_NAME_LEN) != 0) {
+                patch_name[0] = '\0';  /* Not found */
+            }
+        }
+
+        /* Use JSON name if found, otherwise use filename without .json */
+        if (patch_name[0]) {
+            strncpy(g_patches[g_patch_count].name, patch_name, MAX_NAME_LEN - 1);
+        } else {
+            strncpy(g_patches[g_patch_count].name, entry->d_name, MAX_NAME_LEN - 1);
+            g_patches[g_patch_count].name[len - 5] = '\0';
+        }
 
         g_patch_count++;
     }
