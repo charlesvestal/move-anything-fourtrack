@@ -1235,9 +1235,8 @@ static void plugin_render_block(int16_t *out_interleaved_lr, int frames) {
     memset(mix_buffer, 0, sizeof(mix_buffer));
     memset(synth_buffer, 0, sizeof(synth_buffer));
 
-    /* Render synth if loaded and playing/recording */
-    if (g_synth_plugin && g_synth_plugin->render_block &&
-        g_transport != TRANSPORT_STOPPED) {
+    /* Always render synth if loaded (for live playing/auditioning) */
+    if (g_synth_plugin && g_synth_plugin->render_block) {
         g_synth_plugin->render_block(synth_buffer, frames);
     }
 
@@ -1307,6 +1306,16 @@ static void plugin_render_block(int16_t *out_interleaved_lr, int frames) {
                 mix_buffer[i * 2] += (int32_t)(synth_buffer[i * 2] * level);
                 mix_buffer[i * 2 + 1] += (int32_t)(synth_buffer[i * 2 + 1] * level);
             }
+        }
+    }
+
+    /* Always mix in live synth output for monitoring (when not already added during recording) */
+    if (g_synth_plugin && g_transport != TRANSPORT_RECORDING) {
+        float level = (g_selected_track >= 0 && g_selected_track < NUM_TRACKS)
+                      ? g_tracks[g_selected_track].level : 0.8f;
+        for (int i = 0; i < frames; i++) {
+            mix_buffer[i * 2] += (int32_t)(synth_buffer[i * 2] * level);
+            mix_buffer[i * 2 + 1] += (int32_t)(synth_buffer[i * 2 + 1] * level);
         }
     }
 
