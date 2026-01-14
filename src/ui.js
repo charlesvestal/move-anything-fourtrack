@@ -188,13 +188,13 @@ function formatTime(ms) {
  * ============================================================================ */
 
 function updateLEDs() {
-    /* Track row LEDs - show selected/armed state */
+    /* Track row LEDs - green when selected, red when armed, white otherwise */
     for (let i = 0; i < NUM_TRACKS; i++) {
-        let color = White;  /* Default: white when not selected */
+        let color = White;
         if (i === armedTrack) {
-            color = BrightRed;  /* Armed for recording */
+            color = BrightRed;
         } else if (i === selectedTrack) {
-            color = TRACK_COLORS[i];  /* Selected track */
+            color = BrightGreen;
         }
         setButtonLED(TRACK_ROWS[i], color);
     }
