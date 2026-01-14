@@ -424,13 +424,20 @@ function handleCC(cc, val) {
                 setParam("arm_track", String(i));
                 syncState();
             } else if (i === selectedTrack) {
-                /* Tap already-selected track = open patch browser */
-                loadPatches();
-                viewMode = VIEW_PATCH;
+                /* Tap already-selected track = toggle patch browser */
+                if (viewMode === VIEW_PATCH) {
+                    viewMode = VIEW_MAIN;
+                } else {
+                    loadPatches();
+                    viewMode = VIEW_PATCH;
+                }
             } else {
-                /* Track = select track */
+                /* Switch to different track = select it and return to main view */
                 setParam("select_track", String(i));
                 syncState();
+                if (viewMode === VIEW_PATCH) {
+                    viewMode = VIEW_MAIN;
+                }
             }
             needsRedraw = true;
             return;
@@ -516,7 +523,13 @@ function handleCC(cc, val) {
 
     /* Jog click */
     if (cc === CC_JOG_CLICK && val > 63) {
-        if (viewMode === VIEW_PATCH && patches.length > 0) {
+        if (viewMode === VIEW_MAIN) {
+            /* In main view: open patch browser for selected track */
+            loadPatches();
+            viewMode = VIEW_PATCH;
+            needsRedraw = true;
+        } else if (viewMode === VIEW_PATCH && patches.length > 0) {
+            /* In patch view: load the selected patch */
             setParam("load_patch", String(selectedPatch));
             syncState();
             showOverlay("Loaded", patches[selectedPatch].name);
