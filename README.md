@@ -6,10 +6,10 @@ A 4-track audio recorder module for Move Anything on Ableton Move.
 
 - **4 Independent Audio Tracks**: Record up to 60 seconds per track
 - **Signal Chain Integration**: Load any Signal Chain patch as your sound source
-- **Overdub Recording**: Play back existing tracks while recording new ones
-- **Full Mixer**: Per-track level, pan, mute, and solo controls
-- **Metronome**: Adjustable tempo with click track
-- **Loop Playback**: Loop recorded sections
+- **Live Monitoring**: Play your synth while selecting tracks, record when ready
+- **Punch-In Recording**: Pause, reposition, and continue recording
+- **Full Mixer**: Per-track level and pan controls
+- **Knob Macros**: Synth parameters mapped to hardware knobs with overlays
 
 ## Installation
 
@@ -29,12 +29,12 @@ A 4-track audio recorder module for Move Anything on Ableton Move.
 ## Usage
 
 1. Select Four Track from the Move Anything menu
-2. Load a Signal Chain patch for Track 1
-3. Arm Track 1 for recording (Shift + Record)
-4. Press Record and play your performance
-5. Stop recording and switch to Track 2
-6. Load a different patch and record over Track 1
-7. Continue layering up to 4 tracks
+2. Tap a track row to open the patch browser
+3. Select a Signal Chain patch (or "(None)" to clear)
+4. Arm the track with the Sample button (turns red)
+5. Enable record mode with the Record button (turns red)
+6. Press Play to start recording (turns green)
+7. Stop, switch tracks, and layer more parts
 
 See [docs/getting-started.md](docs/getting-started.md) for a detailed tutorial.
 
@@ -48,16 +48,40 @@ See [docs/getting-started.md](docs/getting-started.md) for a detailed tutorial.
 
 | Control | Action |
 |---------|--------|
-| Track Rows | Select track |
-| Play | Start/stop playback |
-| Record | Start/stop recording |
-| Shift+Record | Arm/disarm track |
-| Menu | Cycle views (Main/Patch/Mixer) |
-| Knobs 1-4 | Track levels |
-| Knobs 5-8 | Track pan |
-| Left/Right | Adjust tempo |
+| Track Rows | Select track (tap selected track for patch browser) |
+| Play | Start/stop playback (white=stopped, green=playing) |
+| Record | Toggle record mode (white=off, red=armed) |
+| Sample | Arm/disarm selected track for recording |
+| Menu | Toggle Main/Mixer views |
+| Back | Return to previous view / exit module |
+| Left | Jump to start of track content |
+| Right | Jump to end of track content |
+| Knobs 1-8 | Synth macro controls (in Main view) |
+| Knobs 1-4 | Track levels (in Mixer view) |
+| Knobs 5-8 | Track pan (in Mixer view) |
+| Master | Selected track level |
 | Step 1-4 | Mute tracks |
 | Shift+Step | Solo tracks |
+
+## Views
+
+### Main View
+```
+Four Track        [-] 0:00.0
+  T1: Pad Strings    L:80 P:C00
+> T2: Bass Deep      L:75 P:L25
+R T3: Lead Synth     L:90 P:R10
+  T4: Empty          L:80 P:C00
+```
+- `>` indicates selected track
+- `R` indicates armed track
+- Level (L:00-99) and Pan (P:L50-C00-R50) shown for each track
+
+### Mixer View
+Visual faders for all 4 tracks with pan position ticks.
+
+### Patch Browser
+Jog wheel to scroll, click to load. "(None)" clears the patch.
 
 ## Architecture
 
@@ -74,8 +98,8 @@ src/
 
 - Sample Rate: 44,100 Hz
 - Bit Depth: 16-bit stereo
-- Default Recording: 120 seconds per track (configurable up to 5 minutes)
-- Memory Usage: ~84MB for all 4 tracks at default setting
+- Max Recording: 60 seconds per track
+- Memory Usage: ~42MB for all 4 tracks
 
 ## License
 

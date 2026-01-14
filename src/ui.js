@@ -265,18 +265,19 @@ function drawMainView() {
         /* Track indicator */
         const prefix = isArmed ? "R" : isSelected ? ">" : " ";
 
-        /* Level/Pan info (right side) */
-        const levelVal = Math.round(track.level * 100);
+        /* Level/Pan info (right side) - fixed width: "L:XX P:XXX" */
+        const levelVal = Math.min(99, Math.round(track.level * 100));
+        const levelStr = levelVal.toString().padStart(2, '0');
         let panStr;
         const panVal = Math.round(track.pan * 50);
         if (panVal < -2) {
-            panStr = `L${-panVal}`;
+            panStr = `L${(-panVal).toString().padStart(2, '0')}`;
         } else if (panVal > 2) {
-            panStr = `R${panVal}`;
+            panStr = `R${panVal.toString().padStart(2, '0')}`;
         } else {
-            panStr = "C";
+            panStr = "C00";
         }
-        const lpInfo = `L:${levelVal} P:${panStr}`;
+        const lpInfo = `L:${levelStr} P:${panStr}`;
         const lpInfoWidth = lpInfo.length * 6 + 4;
 
         /* Track name with patch - calculate available space */
@@ -333,7 +334,6 @@ function drawPatchView() {
         });
     }
 
-    drawMenuFooter("Jog:select Click:load");
     drawOverlay();
 }
 
@@ -603,8 +603,8 @@ function handleCC(cc, val) {
                 const newPan = Math.max(-1, Math.min(1, tracks[i].pan + delta * 0.05));
                 setParam("track_pan", `${i}:${newPan.toFixed(2)}`);
                 syncState();
-                const panStr = newPan < -0.1 ? `L${Math.round(-newPan * 100)}` :
-                              newPan > 0.1 ? `R${Math.round(newPan * 100)}` : "C";
+                const panStr = newPan < -0.1 ? `L${Math.round(-newPan * 50)}` :
+                              newPan > 0.1 ? `R${Math.round(newPan * 50)}` : "C";
                 showOverlay(`T${i + 1} Pan`, panStr);
                 needsRedraw = true;
                 return;

@@ -8,7 +8,7 @@ Four Track is a 4-track audio recorder for your Ableton Move running Move Anythi
 
 With Four Track, you can:
 - Layer up to 4 different instrument tracks
-- Record up to 2 minutes per track (5 minutes max)
+- Record up to 60 seconds per track
 - Use different synth patches on each track
 - Play back your recordings while adding new parts
 - Mix and balance your tracks with levels and panning
@@ -30,48 +30,51 @@ Make sure you have:
 
 ```
 Four Track        [-] 0:00.0
-  T1: Empty
-> T2: Empty
-  T3: Empty
-  T4: Empty
-BPM:120 | Loop:Off
+> T1: Empty          L:80 P:C00
+  T2: Empty          L:80 P:C00
+  T3: Empty          L:80 P:C00
+  T4: Empty          L:80 P:C00
 ```
 
 ### Step 2: Load a Sound
 
-1. Track 1 should already be selected (highlighted)
-2. Press the **Menu** button to open the patch browser
+1. Track 1 should already be selected (highlighted, green LED)
+2. **Tap the Track 1 button again** to open the patch browser
 3. Use the **Jog wheel** to scroll through available patches
-4. When you find a patch you like, press the **Jog button** to load it
-5. Press **Back** to return to the main view
+4. "(None)" is shown first - scroll down to see your Signal Chain patches
+5. Press the **Jog button** to load a patch
+6. You'll return to the main view automatically
 
 Track 1 now shows your loaded patch name:
 ```
-> T1: DX7 Piano
+> T1: DX7 Piano      L:80 P:C00
 ```
+
+**Tip:** You can now play the pads and hear your synth! The selected track's patch is always live for playing.
 
 ### Step 3: Arm the Track
 
 Before recording, you need to "arm" the track:
 
-1. Hold **Shift**
-2. Press the **Record** button
+1. Press the **Sample** button (bottom right, labeled with a waveform icon)
+2. The Sample button LED turns red
+3. The Track 1 LED turns red (indicating it's armed)
 
-The Track 1 LED turns red, and the Record button LED turns white. Track 1 is now armed!
+### Step 4: Enable Record Mode
 
-### Step 4: Record!
+1. Press the **Record** button (circular button)
+2. The Record button LED turns red - record mode is enabled
 
-1. Press the **Record** button (without Shift)
-2. The Record LED turns red - you're recording!
+### Step 5: Record!
+
+1. Press **Play** to start recording
+2. The Play LED turns green - you're recording!
 3. Play some notes using the Move pads
-4. When you're done, press **Record** again to stop
+4. When you're done, press **Play** again to stop
 
-Track 1 now shows the recording length:
-```
-> T1: DX7 Piano              8.5s
-```
+Track 1 now shows the recording length in the transport display.
 
-### Step 5: Listen Back
+### Step 6: Listen Back
 
 Press **Play** to hear your recording. Press **Play** again to stop.
 
@@ -81,118 +84,129 @@ Congratulations - you've made your first recording!
 
 Now let's add a second instrument:
 
-### Step 6: Select Track 2
+### Step 7: Select Track 2
 
-Press the **Track 2** row button (or use the Down arrow).
+Press the **Track 2** row button. The Track 2 LED turns green.
 
-### Step 7: Load a Different Sound
+### Step 8: Load a Different Sound
 
-1. Press **Menu** to open the patch browser
+1. **Tap Track 2 again** to open the patch browser
 2. Select a different patch (maybe a bass or pad)
 3. Press the Jog button to load
-4. Press **Back**
+4. You return to main view automatically
 
-### Step 8: Record Track 2
+### Step 9: Record Track 2
 
-1. Arm Track 2 (Shift + Record)
-2. Press **Record** to start
-3. Track 1 will play back while you record Track 2!
-4. Play your new part along with Track 1
-5. Press **Record** to stop
+1. Press **Sample** to arm Track 2 (LED turns red)
+2. Press **Record** to enable record mode (LED turns red)
+3. Press **Play** to start
+4. Track 1 plays back while you record Track 2!
+5. Play your new part along with Track 1
+6. Press **Play** to stop
 
 Now you have two tracks playing together!
+
+## Punch-In Recording
+
+Four Track supports punch-in recording - you can pause, reposition, and continue:
+
+1. Record some content on a track
+2. Press **Play** to stop (playhead stays where it is)
+3. Use **Left arrow** to jump to the start
+4. Use **Right arrow** to jump to the end of your recording
+5. Arm the track, enable record mode
+6. Press **Play** to continue recording from that position
+
+The arrow LEDs turn green when you're at the start or end of the track's content.
 
 ## Mixing Your Tracks
 
 After recording, you'll want to balance your tracks:
 
-### Quick Mix
+### Quick Level Adjustment
 
 - **Master Knob**: Adjusts level of the currently selected track
 - An overlay shows the current value
 
+### Synth Controls
+
+In the main view, **Knobs 1-8** control your synth's macro parameters (as defined in the Signal Chain patch). Overlays show parameter names and values.
+
 ### Full Mixer
 
-1. Press **Menu** twice to enter Mixer view
-2. Use **Knobs 1-4** for track levels
-3. Use **Knobs 5-8** for panning (stereo position)
-4. Press **Back** to return to main view
+1. Press **Menu** to enter Mixer view
+2. Visual faders show all 4 track levels
+3. Pan ticks at the bottom show stereo position
+4. Use **Knobs 1-4** for track levels
+5. Use **Knobs 5-8** for panning
+6. Press **Menu** or **Back** to return to main view
 
 ### Mute and Solo
 
 - **Step 1-4**: Mute tracks 1-4 (press again to unmute)
 - **Shift + Step 1-4**: Solo tracks 1-4 (hear only that track)
 
-## Tips for Better Recordings
+## Clearing a Track
 
-### Use the Metronome
-
-If you're recording music with a beat:
-1. Set your tempo with Left/Right arrows
-2. Enable the metronome before recording
-3. This helps keep all your tracks in time
-
-### Plan Your Arrangement
-
-A typical arrangement might be:
-- **Track 1**: Drums or beat
-- **Track 2**: Bass
-- **Track 3**: Chords or pads
-- **Track 4**: Melody or lead
-
-### Monitor Your Levels
-
-Watch the level bars on each track. If they're always at maximum, your mix might clip. Lower individual track levels to leave headroom.
-
-## Common Tasks
-
-### Clear a Track and Re-record
-
-If you make a mistake:
-1. Select the track you want to clear
-2. Use the clear function to erase the recording
-3. Arm and record again
-
-### Change a Track's Patch
+To clear a track and start over:
 
 1. Select the track
-2. Open the patch browser (Menu)
-3. Load a new patch
+2. Tap the track button to open the patch browser
+3. Select "(None)" at the top of the list
+4. The patch is cleared
 
-Note: This doesn't change existing recordings, only what you record next.
+## LED Reference
 
-### Start Over
-
-To clear everything:
-1. Clear each track individually
-2. Or restart the module
+| LED | State | Meaning |
+|-----|-------|---------|
+| Track Row | White | Track available |
+| Track Row | Green | Track selected |
+| Track Row | Red | Track armed for recording |
+| Play | White | Stopped |
+| Play | Green | Playing/Recording |
+| Record | White | Record mode off |
+| Record | Red | Record mode on |
+| Sample | White | Selected track not armed |
+| Sample | Red | Selected track armed |
+| Left | White | Normal |
+| Left | Green | At start of track content |
+| Right | White | Normal |
+| Right | Green | At end of track content |
 
 ## Keyboard Shortcuts Summary
 
 | Action | Control |
 |--------|---------|
 | Select track | Track Row buttons or Up/Down |
-| Open patch browser | Menu |
-| Cycle views | Menu (repeatedly) |
+| Open patch browser | Tap selected track's row button |
+| Toggle Mixer view | Menu |
 | Go back | Back |
 | Play/Stop | Play |
-| Record/Stop | Record |
-| Arm track | Shift + Record |
+| Toggle record mode | Record |
+| Arm/disarm track | Sample |
+| Jump to start | Left |
+| Jump to end | Right |
 | Mute track | Step 1-4 |
 | Solo track | Shift + Step 1-4 |
-| Adjust level | Knobs 1-4 or Master |
-| Adjust pan | Knobs 5-8 |
-| Change tempo | Left/Right |
+| Synth macros | Knobs 1-8 (main view) |
+| Track levels | Knobs 1-4 (mixer view) |
+| Track pan | Knobs 5-8 (mixer view) |
+| Selected track level | Master knob |
 
 ## Troubleshooting
 
 **No sound when playing?**
 - Check that tracks aren't muted
-- Check track levels in the mixer
-- Make sure you actually recorded something (check track length)
+- Check track levels (L: value should be > 00)
+- Make sure you actually recorded something
+
+**Can't hear synth while selecting?**
+- The selected track's patch is always live - check that a patch is loaded
+- Check that your Move's volume is up
 
 **Can't record?**
-- Make sure a track is armed (red LED)
+- Make sure a track is armed (Sample button red)
+- Make sure record mode is on (Record button red)
 - Make sure a patch is loaded on that track
 
 **Patches not showing?**
@@ -204,11 +218,11 @@ To clear everything:
 Now that you know the basics:
 - Experiment with different patch combinations
 - Try building full arrangements with all 4 tracks
-- Explore the Mixer view for fine-tuning your sound
-- Practice overdubbing to layer complex arrangements
+- Use the Mixer view for fine-tuning your sound
+- Practice punch-in recording to fix mistakes
 
 Have fun creating!
 
 ---
 
-*Four Track v0.1.0 - Part of Move Anything*
+*Four Track - Part of Move Anything*
