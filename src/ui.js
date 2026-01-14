@@ -84,6 +84,7 @@ for (let i = 0; i < NUM_TRACKS; i++) {
 let selectedTrack = 0;
 let armedTrack = -1;
 let transport = "stopped";
+let recordEnabled = false;  /* Record mode - when true, play will start recording */
 let tempo = 120;
 let metronomeEnabled = false;
 let loopEnabled = false;
@@ -189,26 +190,31 @@ function formatTime(ms) {
 function updateLEDs() {
     /* Track row LEDs - show selected/armed state */
     for (let i = 0; i < NUM_TRACKS; i++) {
-        let color = Black;
+        let color = White;  /* Default: white when not selected */
         if (i === armedTrack) {
             color = BrightRed;  /* Armed for recording */
         } else if (i === selectedTrack) {
             color = TRACK_COLORS[i];  /* Selected track */
-        } else if (tracks[i].length > 0) {
-            color = LightGrey;  /* Has audio */
         }
         setButtonLED(TRACK_ROWS[i], color);
     }
 
     /* Transport LEDs */
-    /* Play LED */
+    /* Play LED - white when stopped, green when playing/recording */
     if (transport === "playing" || transport === "recording") {
         setButtonLED(CC_PLAY, BrightGreen);
     } else {
-        setButtonLED(CC_PLAY, Black);
+        setButtonLED(CC_PLAY, White);
     }
 
-    /* Record button LED - red if selected track is armed, white otherwise */
+    /* Record button (CC_REC) - white when off, red when record mode enabled */
+    if (recordEnabled || transport === "recording") {
+        setButtonLED(CC_REC, BrightRed);
+    } else {
+        setButtonLED(CC_REC, White);
+    }
+
+    /* Sample button (CC_RECORD) - red if selected track is armed, white otherwise */
     if (armedTrack === selectedTrack && armedTrack >= 0) {
         setButtonLED(CC_RECORD, BrightRed);
     } else {
@@ -376,11 +382,24 @@ function handleCC(cc, val) {
     /* Transport controls */
     if (cc === CC_PLAY && val > 63) {
         if (transport === "stopped") {
-            setParam("transport", "play");
+            /* If record mode enabled and a track is armed, start recording */
+            if (recordEnabled && armedTrack >= 0) {
+                setParam("transport", "record");
+            } else {
+                setParam("transport", "play");
+            }
         } else {
             setParam("transport", "stop");
+            recordEnabled = false;  /* Clear record mode when stopping */
         }
         syncState();
+        needsRedraw = true;
+        return;
+    }
+
+    /* Record button (CC_REC) - toggle record mode */
+    if (cc === CC_REC && val > 63) {
+        recordEnabled = !recordEnabled;
         needsRedraw = true;
         return;
     }
