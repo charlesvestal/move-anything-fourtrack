@@ -740,7 +740,7 @@ static void update_solo_state(void) {
 
 static void stop_transport(void) {
     g_transport = TRANSPORT_STOPPED;
-    g_playhead = 0;
+    /* Keep playhead where it is for punch-in recording */
 }
 
 static void start_playback(void) {
@@ -1031,6 +1031,21 @@ static void plugin_set_param(const char *key, const char *val) {
         } else if (strcmp(val, "record") == 0) {
             toggle_recording();
         }
+    }
+    else if (strcmp(key, "goto_start") == 0) {
+        g_playhead = 0;
+        ft_log("Jumped to start");
+    }
+    else if (strcmp(key, "goto_end") == 0) {
+        /* Jump to end of selected track's audio */
+        if (g_selected_track >= 0 && g_selected_track < NUM_TRACKS) {
+            int track_length = g_tracks[g_selected_track].length;
+            if (track_length > 0) {
+                /* length is in samples (stereo), playhead is in frames */
+                g_playhead = track_length / NUM_CHANNELS;
+            }
+        }
+        ft_log("Jumped to end of track");
     }
     else if (strcmp(key, "tempo") == 0) {
         g_tempo_bpm = atoi(val);

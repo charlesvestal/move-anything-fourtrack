@@ -476,20 +476,18 @@ function handleCC(cc, val) {
             return;
         }
 
-        /* Left/Right for tempo adjustment */
+        /* Left = jump to start, Right = jump to end of track */
         if (cc === CC_LEFT && val > 63) {
-            const newTempo = Math.max(20, tempo - (shiftHeld ? 10 : 1));
-            setParam("tempo", String(newTempo));
+            setParam("goto_start", "1");
             syncState();
-            showOverlay("Tempo", `${tempo} BPM`);
+            showOverlay("Position", "Start");
             needsRedraw = true;
             return;
         }
         if (cc === CC_RIGHT && val > 63) {
-            const newTempo = Math.min(300, tempo + (shiftHeld ? 10 : 1));
-            setParam("tempo", String(newTempo));
+            setParam("goto_end", "1");
             syncState();
-            showOverlay("Tempo", `${tempo} BPM`);
+            showOverlay("Position", "End");
             needsRedraw = true;
             return;
         }
