@@ -1264,8 +1264,9 @@ static void plugin_render_block(int16_t *out_interleaved_lr, int frames) {
             }
         }
 
-        /* Playback: mix track audio into output */
-        if (track->length > 0 && g_transport != TRANSPORT_STOPPED) {
+        /* Playback: mix track audio into output (skip track being recorded) */
+        if (track->length > 0 && g_transport != TRANSPORT_STOPPED &&
+            !(g_transport == TRANSPORT_RECORDING && t == g_armed_track)) {
             int read_pos = g_playhead * NUM_CHANNELS;
 
             for (int i = 0; i < frames; i++) {
