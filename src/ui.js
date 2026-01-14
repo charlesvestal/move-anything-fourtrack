@@ -224,6 +224,13 @@ function updateLEDs() {
     /* Navigation buttons */
     setButtonLED(CC_MENU, WhiteLedBright);
     setButtonLED(CC_BACK, WhiteLedBright);
+
+    /* Left/Right arrows - green at start/end of track content, white otherwise */
+    const trackLengthMs = tracks[selectedTrack].length * 1000;
+    const atStart = playheadMs <= 0;
+    const atEnd = trackLengthMs > 0 && playheadMs >= trackLengthMs - 50;  /* 50ms tolerance */
+    setButtonLED(CC_LEFT, atStart ? BrightGreen : White);
+    setButtonLED(CC_RIGHT, atEnd ? BrightGreen : White);
 }
 
 /* ============================================================================
